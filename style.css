@@ -45,14 +45,25 @@ button:hover {
   background-color: #ff3b3b;
 }
 
-#output {
+.output {
   margin-top: 30px;
   font-size: 18px;
   line-height: 1.7;
   text-align: left;
+  font-weight: 300;
 }
 
 .bold {
   font-weight: 600;
   color: #ff6b6b;
+}
+
+.underline {
+  font-weight: 400;
+  background-color: #fff4f1;
+  border-radius: 3px;
+}
+.blue {
+  color: #413135;
+  font-weight: 500;
 }
