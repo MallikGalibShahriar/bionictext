@@ -58,12 +58,26 @@ button:hover {
   color: #ff6b6b;
 }
 
-.underline {
+.highlight {
   font-weight: 400;
   background-color: #fff4f1;
   border-radius: 3px;
 }
-.blue {
-  color: #413135;
+
+}
+.italic {
+  font-style: italic;
+  color: #007bff;
   font-weight: 500;
+}
+.black {
+  color: black;
+  font-weight: 600;
+}
+.underline {
+  text-decoration: underline;
+}
+.orange {
+  color: #ff934d;
+  font-weight: 600;
 }
