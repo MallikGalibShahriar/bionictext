@@ -2,43 +2,58 @@ const textInput = document.getElementById('textInput');
 const boldifyBtn = document.getElementById('boldifyBtn');
 const output = document.getElementById('output');
 
-const commonPrepositions = [
-  'about', 'above', 'across', 'after', 'against', 'along', 'among', 'around', 'at', 'before', 'behind', 'below', 'beneath', 'beside', 'between'
-];
-
-const prefixSuffixPrefixes = [
-  'a-', 'ab-', 'ad-', 'ambi-', 'an-', 'ante-', 'anti-', 'auto-', 'bi-', 'bio-', 'circum-', 'co-', 'com-', 'con-', 'contra-', 'counter-', 'de-', 'demi-', 'di-', 'dis-', 'dys-', 'e-', 'ec-', 'en-', 'ex-', 'extra-', 'fore-', 'hemi-', 'hyper-', 'hypo-', 'il-', 'im-', 'in-', 'ir-', 'inter-', 'intra-', 'intro-', 'macro-', 'mal-', 'micro-', 'mis-', 'mono-', 'multi-', 'non-', 'ob-', 'op-', 'over-', 'para-', 'per-', 'poly-', 'post-', 'pre-', 'pro-', 're-', 'semi-', 'sub-', 'super-', 'sym-', 'syn-', 'tele-', 'trans-', 'tri-', 'ultra-', 'un-', 'under-', 'uni-', 'up-', 'vice-', 'well-', 'with-'
-];
-
-const prefixSuffixSuffixes = [
-  'able', 'acy', 'age', 'al', 'ance', 'ant', 'ary', 'ate', 'dom', 'ed', 'ee', 'en', 'er', 'es', 'est', 'ess', 'ful', 'hood', 'ible', 'ice', 'ile', 'ing', 'ion', 'ish', 'ist', 'ity', 'ive', 'ize', 'less', 'like', 'ly', 'ment', 'ness', 'ous', 'ship', 'sion', 'tion', 'ture', 'ty', 'ward', 'wise', 'y', 'acious', 'ade', 'agog', 'aholic', 'al', 'an', 'ance', 'ant', 'ard', 'arium', 'ation', 'ative', 'cy', 'cide', 'cracy', 'crat', 'cratic', 'cle', 'cule', 'der', 'dom', 'ee', 'eer', 'ence', 'ency', 'ent', 'er', 'es', 'ese', 'ette', 'ful', 'fy', 'gram', 'graph', 'ian', 'ible', 'ic', 'ice', 'ile', 'ine', 'ing', 'ion', 'ise', 'ish', 'ism', 'ist', 'ite', 'itis', 'ity', 'ive', 'ize', 'ious', 'less', 'logy', 'ly', 'ment', 'ness', 'ous', 'path', 'pathy', 'phile', 'phone', 'phy', 'sion', 'tion', 'tive', 'tude', 'ward', 'ware', 'wise', 'y'
-];
-
-function isCommonPreposition(word) {
-  return commonPrepositions.includes(word.toLowerCase());
-}
-
-function isPrefixSuffixPrefix(word) {
-  return prefixSuffixPrefixes.some(prefix => word.startsWith(prefix));
-}
-
-function isPrefixSuffixSuffix(word) {
-  return prefixSuffixSuffixes.some(suffix => word.endsWith(suffix));
+function shouldBlackifyEnding(word) {
+  const endingPatterns = ['ing', 'ed', 'fy', 'ize', 'ise', 'able', 'ful', 'ism'];
+  for (const pattern of endingPatterns) {
+    if (word.endsWith(pattern)) {
+      return pattern;
+    }
+  }
+  return false;
 }
 
 function getModifiedWord(word) {
-  if (word.length >= 8) {
-    return `<span class="underline">${word}</span>`;
-  } else if (word.length > 3 && !isCommonPreposition(word)) {
-    const consonantIndex = Math.min(word.length - 1, 2);
-    const boldPart = word.slice(0, consonantIndex + 1);
-    const restPart = word.slice(consonantIndex + 1);
-    return `<span class="bold">${boldPart}</span>${restPart}`;
-  } else if (isPrefixSuffixPrefix(word) || isPrefixSuffixSuffix(word)) {
-    return `<span class="blue">${word}</span>`;
-  } else {
-    return word;
+  
+  if (word === "'" || word === '"') {
+    return `<span class="orange">${word}</span>`;
   }
+
+  if (word.startsWith("'") || word.startsWith('"')) {
+    const quote = word[0];
+    const closingQuoteIndex = word.lastIndexOf(quote);
+
+    if (closingQuoteIndex !== -1) {
+      const quotedPortion = word.substring(1, closingQuoteIndex);
+      const restPart = word.substring(closingQuoteIndex + 1);
+
+      return `${quote}<span class="orange">${quotedPortion}</span>${quote}${restPart}`;
+    }
+  }
+
+  const endingPattern = shouldBlackifyEnding(word);
+  if (endingPattern) {
+    const prefixPart = word.slice(0, word.length - endingPattern.length);
+    const endingPart = word.slice(word.length - endingPattern.length);
+    return `${prefixPart}<span class="black">${endingPart}</span>`;
+  }
+
+  if (word.length >= 9) {
+    return `<span class="highlight">${word}</span>`;
+  }
+
+  if (word.length > 3 && word.length <= 5) {
+    const boldPart = word.slice(0, Math.min(2, word.length));
+    const restPart = word.slice(Math.min(2, word.length));
+    return `<span class="bold">${boldPart}</span>${restPart}`;
+  }
+
+  if (word.length >= 6 && word.length <= 8) {
+    const boldPart = word.slice(0, 3);
+    const restPart = word.slice(3);
+    return `<span class="bold">${boldPart}</span>${restPart}`;
+  }
+
+  return word;
 }
 
 function processText() {
