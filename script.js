@@ -13,14 +13,9 @@ function shouldBlackifyEnding(word) {
 }
 
 function getModifiedWord(word) {
-  
-  if (word === "'" || word === '"') {
-    return `<span class="orange">${word}</span>`;
-  }
-
   if (word.startsWith("'") || word.startsWith('"')) {
     const quote = word[0];
-    const closingQuoteIndex = word.lastIndexOf(quote);
+    const closingQuoteIndex = word.indexOf(quote, 1);
 
     if (closingQuoteIndex !== -1) {
       const quotedPortion = word.substring(1, closingQuoteIndex);
